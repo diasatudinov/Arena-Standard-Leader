@@ -2,7 +2,27 @@
 //  ASTeam.swift
 //  Arena Standard Leader
 //
-//  Created by Dias Atudinov on 01.05.2026.
 //
 
-import Foundation
+import SwiftUI
+
+struct Team: Codable, Hashable, Identifiable {
+    let id = UUID()
+    var name: String
+    var jobTitle: String
+    var energyBalance: Double
+    var note: String
+    
+    var imageData: Data?
+    
+    var image: UIImage? {
+        get {
+            guard let imageData else { return nil }
+            return UIImage(data: imageData)
+        }
+        set {
+            imageData = newValue?.jpegData(compressionQuality: 0.8)
+        }
+    }
+    
+}
