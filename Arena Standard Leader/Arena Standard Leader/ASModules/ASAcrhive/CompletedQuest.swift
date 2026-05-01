@@ -1,3 +1,11 @@
+//
+//  CompletedQuest.swift
+//  Arena Standard Leader
+//
+//
+
+import SwiftUI
+
 struct CompletedQuest: Identifiable, Codable {
     let id: UUID
     let questId: Int

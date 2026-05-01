@@ -1,3 +1,11 @@
+//
+//  QuestArchiveView.swift
+//  Arena Standard Leader
+//
+//
+
+import SwiftUI
+
 struct QuestArchiveView: View {
     
     @ObservedObject var viewModel: CareerViewModel
@@ -5,16 +13,17 @@ struct QuestArchiveView: View {
     
     var body: some View {
         ZStack {
-            MissionHubBackground()
+            Color.black
                 .ignoresSafeArea()
             
-            VStack(spacing: 16) {
+            VStack(spacing: 0) {
                 headerView
-                
-                statsView
                 
                 ScrollView(showsIndicators: false) {
                     VStack(spacing: 16) {
+                        
+                        statsView
+                        
                         if viewModel.sortedArchivedQuests.isEmpty {
                             emptyView
                         } else {
@@ -24,10 +33,9 @@ struct QuestArchiveView: View {
                         }
                     }
                     .padding(.horizontal, 18)
-                    .padding(.bottom, 28)
+                    .padding(.bottom, 150)
                 }
             }
-            .padding(.top, 24)
         }
         .navigationBarBackButtonHidden(true)
         .navigationBarHidden(true)
@@ -35,38 +43,11 @@ struct QuestArchiveView: View {
     
     private var headerView: some View {
         ZStack {
-            Text("QUEST ARCHIVE")
-                .font(.system(size: 32, weight: .heavy, design: .rounded))
-                .foregroundColor(.white)
-                .shadow(color: .black.opacity(0.85), radius: 2, x: 2, y: 3)
+            Image(.archiveText)
+                .resizable()
+                .scaledToFit()
             
-            HStack {
-                Button {
-                    dismiss()
-                } label: {
-                    Image(systemName: "chevron.left")
-                        .font(.system(size: 18, weight: .heavy))
-                        .foregroundColor(.white)
-                        .frame(width: 42, height: 42)
-                        .background(Color.black.opacity(0.25))
-                        .clipShape(Circle())
-                }
-                
-                Spacer()
-            }
-            .padding(.horizontal, 18)
         }
-        .frame(height: 76)
-        .background(
-            LinearGradient(
-                colors: [
-                    Color.purple.opacity(0.75),
-                    Color.purple.opacity(0.35)
-                ],
-                startPoint: .top,
-                endPoint: .bottom
-            )
-        )
     }
     
     private var statsView: some View {
@@ -88,32 +69,7 @@ struct QuestArchiveView: View {
                 value: viewModel.favoriteQuestType.uppercased()
             )
             
-            Button {
-                print("Export PDF Report tapped")
-            } label: {
-                Text("EXPORT PDF REPORT")
-                    .font(.system(size: 16, weight: .heavy, design: .rounded))
-                    .foregroundColor(.white)
-                    .frame(maxWidth: .infinity)
-                    .frame(height: 54)
-                    .background(
-                        LinearGradient(
-                            colors: [
-                                Color.blue,
-                                Color.cyan.opacity(0.85)
-                            ],
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
-                        )
-                    )
-                    .clipShape(RoundedRectangle(cornerRadius: 12))
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 12)
-                            .stroke(Color.white.opacity(0.3), lineWidth: 1)
-                    )
-            }
         }
-        .padding(.horizontal, 18)
     }
     
     private var emptyView: some View {
@@ -137,5 +93,135 @@ struct QuestArchiveView: View {
             RoundedRectangle(cornerRadius: 18)
                 .fill(Color.black.opacity(0.28))
         )
+    }
+}
+
+#Preview {
+    QuestArchiveView(viewModel: CareerViewModel())
+}
+
+private struct ArchiveStatCard: View {
+    
+    let title: String
+    let value: String
+    
+    var body: some View {
+        VStack(spacing: 8) {
+            Text(title)
+                .font(.system(size: 12, weight: .heavy, design: .rounded))
+                .foregroundColor(.brown.opacity(0.7))
+                .lineLimit(1)
+                .minimumScaleFactor(0.7)
+            
+            Text(value)
+                .font(.system(size: 32, weight: .heavy, design: .rounded))
+                .foregroundColor(.white)
+                .lineLimit(1)
+                .minimumScaleFactor(0.5)
+                .shadow(color: .black.opacity(0.75), radius: 1, x: 1, y: 2)
+        }
+        .frame(maxWidth: .infinity)
+        .frame(height: 90)
+        .background(
+            LinearGradient(
+                colors: [
+                    Color.yellow.opacity(0.95),
+                    Color.orange.opacity(0.95)
+                ],
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+        )
+        .clipShape(RoundedRectangle(cornerRadius: 10))
+        .overlay(
+            RoundedRectangle(cornerRadius: 10)
+                .stroke(Color.white.opacity(0.65), lineWidth: 2)
+        )
+        .shadow(color: .black.opacity(0.35), radius: 5, x: 0, y: 4)
+    }
+}
+
+private struct ArchivedQuestCard: View {
+    
+    let quest: CompletedQuest
+    
+    var body: some View {
+        VStack(spacing: 12) {
+            HStack(alignment: .top) {
+                VStack(alignment: .leading, spacing: 6) {
+                    HStack(spacing: 8) {
+                        
+                        Text(quest.title.uppercased())
+                            .font(.system(size: 22, weight: .heavy, design: .rounded))
+                            .foregroundColor(.white)
+                            .shadow(color: .black.opacity(0.7), radius: 1, x: 1, y: 2)
+                            .lineLimit(2)
+                            .minimumScaleFactor(0.65)
+                    }
+                    
+                }
+                
+                Spacer()
+                
+                StarRatingView(value: quest.difficulty.rawValue)
+            }
+            
+            if !quest.note.isEmpty {
+                Text(quest.note)
+                    .font(.system(size: 15, weight: .bold, design: .rounded))
+                    .foregroundColor(.purple)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 14)
+                    .background(Color.white.opacity(0.75))
+                    .clipShape(RoundedRectangle(cornerRadius: 18))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 18)
+                            .stroke(Color.purple, lineWidth: 2)
+                    )
+            }
+            
+            HStack {
+                Label("+\(quest.xpReward) XP", systemImage: "bolt.fill")
+                
+                Spacer()
+                
+                Label {
+                    Text(quest.energyRewardText)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.7)
+                } icon: {
+                    Image(systemName: "gearshape.fill")
+                }
+            }
+            .font(.system(size: 18, weight: .black, design: .rounded))
+            .foregroundColor(.black)
+        }
+        .padding(16)
+        .background(cardGradient)
+    }
+    
+    private var cardGradient: Image {
+        switch quest.difficulty {
+        case .easy:
+            return Image(.easyBg)
+                .resizable()
+            
+        case .medium:
+            return Image(.mediumBg).resizable()
+            
+        case .hard:
+            return Image(.hardBg).resizable()
+        }
+    }
+}
+
+private extension Date {
+    
+    var archiveDateText: String {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.dateFormat = "MMM d, yyyy HH:mm"
+        return formatter.string(from: self)
     }
 }

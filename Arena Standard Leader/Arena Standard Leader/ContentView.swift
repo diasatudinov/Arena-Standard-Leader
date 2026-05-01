@@ -2,7 +2,6 @@
 //  ContentView.swift
 //  Arena Standard Leader
 //
-//  Created by Dias Atudinov on 29.04.2026.
 //
 
 import SwiftUI
